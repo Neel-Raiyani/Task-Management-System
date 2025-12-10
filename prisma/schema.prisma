@@ -30,3 +30,20 @@ model Workspace {
   memberIds String[] @db.ObjectId
   createdAt DateTime @default(now())
 }
+
+model Board {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  workspaceId String      @db.ObjectId
+  columns     Column[]    @relation("BoardColumns")
+  createdAt   DateTime    @default(now())
+}
+
+model Column {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  boardId   String   @db.ObjectId
+  board     Board    @relation("BoardColumns", fields: [boardId], references: [id])
+  name      String
+  order     Int      
+  createdAt DateTime @default(now())
+}

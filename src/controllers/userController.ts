@@ -76,7 +76,7 @@ export const login = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
     try {
         if (!req.userId) {
-            return res.status(401).json({ message: "Unauthorized: no userId found" });
+            return res.status(401).json({ message: "No user found!!!" });
         }
 
         const user = await prisma.user.findUnique({ where: { id: req.userId }, omit: { password: true } });

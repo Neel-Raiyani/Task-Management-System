@@ -2,6 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
+import workspaceRoutes from "./routes/workspaceRoutes.js";
+import boardRoutes from "./routes/boardRoutes.js";
+import columnRoutes from "./routes/columnRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -12,6 +15,12 @@ connectDB();
 app.use(express.json());
 
 app.use("/auth", userRoutes);
+
+app.use("/workspace", workspaceRoutes);
+
+app.use("/board", boardRoutes);
+
+app.use("/column", columnRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on "http://localhost:${PORT}"`);
