@@ -6,11 +6,11 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -21,5 +21,12 @@ model User {
   avatar    String? 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  // You can add workspaceIds: String[] later when modeling workspaces
+}
+
+model Workspace {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  ownerId   String   @db.ObjectId
+  memberIds String[] @db.ObjectId
+  createdAt DateTime @default(now())
 }
