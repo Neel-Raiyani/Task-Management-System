@@ -5,6 +5,7 @@ import userRoutes from "./routes/userRoutes.js";
 import workspaceRoutes from "./routes/workspaceRoutes.js";
 import boardRoutes from "./routes/boardRoutes.js";
 import columnRoutes from "./routes/columnRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -21,6 +22,8 @@ app.use("/workspace", workspaceRoutes);
 app.use("/board", boardRoutes);
 
 app.use("/column", columnRoutes);
+
+app.use("/task", taskRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on "http://localhost:${PORT}"`);

@@ -51,7 +51,18 @@ export const renameColumn = async (req: Request, res: Response) => {
 
 export const reorderColumns = async (req: Request, res: Response) => {
     try {
-        const { orderedIds } = req.body;
+        const { boardId, orderedIds } = req.body;
+
+        if(!boardId || !orderedIds){
+            return res.json({message: "BoardId and ColumnIds are required"})
+        }
+
+        const board = await prisma.board.findUnique({
+            where: {id: boardId}
+        });
+        if(!board){
+            return res.status(404).json({message: "Board with the entered boardId is not found!!!"})
+        }
 
         for (let i = 0; i < orderedIds.length; i++) {
             await prisma.column.update({
@@ -65,3 +76,6 @@ export const reorderColumns = async (req: Request, res: Response) => {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }
 }
+
+
+

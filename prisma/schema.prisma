@@ -47,3 +47,27 @@ model Column {
   order     Int      
   createdAt DateTime @default(now())
 }
+
+model Task {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  boardId     String   @db.ObjectId            
+  columnId    String   @db.ObjectId            // which column (status) this task belongs to
+  title       String
+  description String?                          
+  priority    Priority  @default(MEDIUM)
+  assigneeIds String[] @db.ObjectId            
+  labels      String[]                         
+  dueDate     DateTime?                        
+  attachments String[]                         
+  order       Int      @default(0)             
+  createdBy   String   @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
