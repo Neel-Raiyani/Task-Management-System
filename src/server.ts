@@ -1,5 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
+import http from "http";
+import { Server } from "socket.io";
+
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import workspaceRoutes from "./routes/workspaceRoutes.js";
@@ -9,6 +12,7 @@ import taskRoutes from "./routes/taskRoutes.js";
 import subtaskRoutes from "./routes/subtaskRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import { setSocket } from "./config/socket.js";
 
 dotenv.config();
 
@@ -29,7 +33,25 @@ app.use("/subtask", subtaskRoutes);
 app.use("/comment", commentRoutes);
 app.use("/upload", uploadRoutes);
 
-app.listen(PORT, () => {
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+});
+
+setSocket(io);
+
+io.on("connection", (socket) => {
+    console.log("User connected: ", socket.id)
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected:", socket.id);
+    });
+});
+
+server.listen(PORT, () => {
     console.log(`Server running on "http://localhost:${PORT}"`);
 });
 

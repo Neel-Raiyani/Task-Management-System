@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client.js"
+import { getSocket } from "../config/socket.js";
 
 
 const verifyUserInBoardWorkspace = async (userId: string, boardId: string) => {
@@ -55,6 +56,8 @@ export const createTask = async (req: Request, res: Response) => {
                 createdBy: userId
             }
         });
+
+        getSocket().emit("taskCreated", task);
 
         return res.status(201).json({ message: "Task created", task });
 
@@ -127,6 +130,8 @@ export const updateTask = async (req: Request, res: Response) => {
             data
         });
 
+        getSocket().emit("taskUpdated", updated);
+
         res.json({ message: "Task updated", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
@@ -148,6 +153,8 @@ export const moveTask = async (req: Request, res: Response) => {
             where: { id: taskId },
             data: { columnId: newColumnId }
         });
+
+        getSocket().emit("taskMoved", moved);
 
         res.json({ message: "Task moved", task: moved });
     } catch (error) {
@@ -173,6 +180,12 @@ export const assignUser = async (req: Request, res: Response) => {
                     push: userId
                 }
             }
+        });
+
+        getSocket().emit("taskAssigned", {
+            taskId,
+            userId,
+            task: updated
         });
 
         res.json({ message: "User assigned", task: updated });
@@ -205,6 +218,12 @@ export const unassignUser = async (req: Request, res: Response) => {
             data: { assigneeIds: updatedAssignees }
         });
 
+        getSocket().emit("taskUnassigned", {
+            taskId,
+            userId,
+            task: updated
+        });
+
         res.json({ message: "User unassigned", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
@@ -228,6 +247,8 @@ export const addLabel = async (req: Request, res: Response) => {
                 labels: { push: label }
             }
         });
+
+        getSocket().emit("labelAdded", updated);
 
         res.json({ message: "Label added", task: updated });
     } catch (error) {
@@ -261,6 +282,8 @@ export const removeLabel = async (req: Request, res: Response) => {
             }
         });
 
+        getSocket().emit("labelRemoved", updated);
+
         res.json({ message: "Label removed", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
@@ -282,6 +305,8 @@ export const updatePriority = async (req: Request, res: Response) => {
             where: { id: taskId },
             data: { priority }
         });
+
+        getSocket().emit("priorityUpdated", updated);
 
         res.json({ message: "Priority updated", task: updated });
     } catch (error) {
@@ -305,6 +330,8 @@ export const updateDueDate = async (req: Request, res: Response) => {
             data: { dueDate: new Date(dueDate) }
         });
 
+        getSocket().emit("dueDateUpdated", updated);
+
         res.json({ message: "Due date updated", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
@@ -324,6 +351,8 @@ export const deleteTask = async (req: Request, res: Response) => {
         await prisma.task.delete({
             where: { id: taskId }
         });
+
+        getSocket().emit("taskDeleted", { taskId });
 
         res.json({ message: "Task deleted" });
     } catch (error) {
