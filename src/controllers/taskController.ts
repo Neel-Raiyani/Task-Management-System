@@ -309,4 +309,24 @@ export const updateDueDate = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
-};
+}
+
+
+
+export const deleteTask = async (req: Request, res: Response) => {
+    try {
+        const { taskId } = req.params;
+
+        if (!taskId) {
+            return res.json({ message: "SubtaskId is required" });
+        }
+
+        await prisma.task.delete({
+            where: { id: taskId }
+        });
+
+        res.json({ message: "Task deleted" });
+    } catch (error) {
+        res.status(500).json({ Message: "Internal server error!!!", error });
+    }
+}

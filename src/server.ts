@@ -7,6 +7,9 @@ import boardRoutes from "./routes/boardRoutes.js";
 import columnRoutes from "./routes/columnRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import subtaskRoutes from "./routes/subtaskRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -15,18 +18,16 @@ const PORT = process.env.PORT || 1818;
 connectDB();
 
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 app.use("/auth", userRoutes);
-
 app.use("/workspace", workspaceRoutes);
-
 app.use("/board", boardRoutes);
-
 app.use("/column", columnRoutes);
-
 app.use("/task", taskRoutes);
-
 app.use("/subtask", subtaskRoutes);
+app.use("/comment", commentRoutes);
+app.use("/upload", uploadRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on "http://localhost:${PORT}"`);

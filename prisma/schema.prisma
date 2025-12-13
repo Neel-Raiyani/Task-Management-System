@@ -64,7 +64,8 @@ model Task {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  subtasks    Subtask[] 
+  subtasks    Subtask[]
+  comments    Comment[]
 }
 
 enum Priority {
@@ -82,4 +83,17 @@ model Subtask {
   createdAt DateTime @default(now())
 
   task      Task     @relation(fields: [taskId], references: [id])
+}
+
+model Comment {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  taskId     String   @db.ObjectId
+  userId     String   @db.ObjectId
+  content    String
+  parentId   String?  @db.ObjectId   // null for root comment, otherwise a reply
+  attachments String[]               // array of file paths / ids
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  task       Task     @relation(fields: [taskId], references: [id])
 }
