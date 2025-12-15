@@ -11,6 +11,14 @@ export const uploadTaskFiles = async (req: Request, res: Response) => {
 
         if (!taskId) return res.status(400).json({ message: "TaskId is missing" });
 
+        const Task = await prisma.task.findUnique({
+            where: { id: taskId }
+        });
+
+        if (!Task) {
+            return res.status(404).json({ message: "Task not found!!!" });
+        }
+
         if (!files || files.length === 0) {
             return res.status(400).json({ message: "No files uploaded" });
         }
@@ -38,6 +46,14 @@ export const uploadCommentFiles = async (req: Request, res: Response) => {
         const files = req.files as Express.Multer.File[];
 
         if (!commentId) return res.status(400).json({ message: "CommentId is missing" });
+
+        const Comment = await prisma.comment.findUnique({
+            where: { id: commentId }
+        });
+
+        if (!Comment) {
+            return res.status(404).json({ message: "Comment not found!!!" });
+        }
 
         if (!files || files.length === 0) {
             return res.status(400).json({ message: "No files uploaded" });

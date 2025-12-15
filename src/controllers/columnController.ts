@@ -8,6 +8,13 @@ export const createColumn = async (req: Request, res: Response) => {
         if (!boardId || !name)
             return res.status(400).json({ message: "Board ID & name required" });
 
+        const board = await prisma.board.findUnique({
+            where: { id: boardId }
+        });
+
+        if (!board) {
+            return res.status(404).json({ message: "Board not found!!!" });
+        }
 
         const count = await prisma.column.count({ where: { boardId } });
 

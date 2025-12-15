@@ -72,6 +72,14 @@ export const deleteSubtask = async (req: Request, res: Response) => {
             return res.json({ message: "SubtaskId is required" });
         }
 
+        const subtask = await prisma.subtask.findUnique({
+            where: { id: subtaskId }
+        });
+
+        if (!subtask) {
+            return res.status(404).json({ message: "Subtask not found!!!" });
+        }
+
         await prisma.subtask.delete({
             where: { id: subtaskId }
         });
