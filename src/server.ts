@@ -12,6 +12,7 @@ import taskRoutes from "./routes/taskRoutes.js";
 import subtaskRoutes from "./routes/subtaskRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import { setSocket } from "./config/socket.js";
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/task", taskRoutes);
 app.use("/subtask", subtaskRoutes);
 app.use("/comment", commentRoutes);
 app.use("/upload", uploadRoutes);
+app.use("/notification", notificationRoutes);
 
 const server = http.createServer(app);
 
@@ -45,6 +47,8 @@ setSocket(io);
 
 io.on("connection", (socket) => {
     console.log("User connected: ", socket.id)
+
+    socket.join(`user_${socket.data.userId}`);
 
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);

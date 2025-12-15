@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client.js"
 import { getSocket } from "../config/socket.js";
+import { createNotification } from "../utils/notify.js";
 
 
 const verifyUserInBoardWorkspace = async (userId: string, boardId: string) => {
@@ -39,6 +40,20 @@ export const createTask = async (req: Request, res: Response) => {
 
         await verifyUserInBoardWorkspace(userId, boardId);
 
+        const existingTask = await prisma.task.findFirst({
+            where: {
+                boardId,
+                columnId,
+                title: title.trim(),
+            }
+        });
+
+        if (existingTask) {
+            return res.status(409).json({
+                message: "Task with same title already exists in this column"
+            });
+        }
+
         const countInColumn = await prisma.task.count({ where: { columnId } });
         const order = countInColumn;
 
@@ -59,9 +74,20 @@ export const createTask = async (req: Request, res: Response) => {
 
         getSocket().emit("taskCreated", task);
 
+        const io = getSocket();
+
+        for (const assigneeId of assigneeIds) {
+            await createNotification(
+                io,
+                assigneeId,
+                "You were assigned to a task"
+            );
+        }
+
         return res.status(201).json({ message: "Task created", task });
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
 }
@@ -70,7 +96,7 @@ export const createTask = async (req: Request, res: Response) => {
 
 export const getTask = async (req: Request, res: Response) => {
     try {
-        const taskId = req.params.id;
+        const { taskId } = req.params;
 
         if (!taskId) {
             return res.status(400).json({ message: "Task ID is required" });
@@ -123,6 +149,14 @@ export const updateTask = async (req: Request, res: Response) => {
 
         if (!taskId) {
             return res.json({ message: "TaskId is missing!!!" })
+        }
+
+        const task = await prisma.task.findUnique({
+            where: { id: taskId }
+        });
+
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
         }
 
         const updated = await prisma.task.update({

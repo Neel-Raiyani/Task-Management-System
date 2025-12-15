@@ -5,7 +5,7 @@ import { addLabel, assignUser, createTask, deleteTask, getTask, listBoardTasks, 
 
 router.post('/create', auth, createTask);
 
-router.get('/:id', auth, getTask);
+router.get('/:taskId', auth, getTask);
 router.get('/list-board-tasks/:boardId', auth, listBoardTasks);
 
 router.put('/update/:taskId', auth, updateTask);

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client.js";
+import { createNotification } from "../utils/notify.js";
+import { getSocket } from "../config/socket.js";
 
 export const addComment = async (req: Request, res: Response) => {
     try {
@@ -9,6 +11,15 @@ export const addComment = async (req: Request, res: Response) => {
 
         if (!userId || !taskId) return res.status(400).json({ message: "UserId & taskId are required" });
 
+        const task = await prisma.task.findUnique({
+            where: { id: taskId },
+            select: { createdBy: true }
+        });
+
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
         if (!content || content.trim() === "") {
             return res.status(400).json({ message: "Content is required" });
         }
@@ -17,9 +28,18 @@ export const addComment = async (req: Request, res: Response) => {
             data: { taskId, userId, content, attachments, parentId: null }
         });
 
+        const io = getSocket();
+
+        await createNotification(
+            io,
+            task.createdBy,
+            "New comment added to your task"
+        );
+
         return res.status(201).json({ message: "Comment added", comment });
 
     } catch (error) {
+        console.log(error);
         res.status(500).json({ Message: "Internal server error!!!", error });
     }
 }
