@@ -13,6 +13,7 @@ import subtaskRoutes from "./routes/subtaskRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import taskSearchRoutes from "./routes/taskSearchRoutes.js";
 import { setSocket } from "./config/socket.js";
 
 dotenv.config();
@@ -34,6 +35,7 @@ app.use("/subtask", subtaskRoutes);
 app.use("/comment", commentRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/notification", notificationRoutes);
+app.use("/search", taskSearchRoutes);
 
 const server = http.createServer(app);
 

@@ -5,6 +5,6 @@ import auth from "../middlewares/auth.js";
 
 router.get('/',auth, getMyNotifications);
 
-router.put('/mark-as-read', auth, markAsRead);
+router.put('/mark-as-read/:notificationId', auth, markAsRead);
 
 export default router;
