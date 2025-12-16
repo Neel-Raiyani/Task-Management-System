@@ -145,10 +145,11 @@ export const listBoardTasks = async (req: Request, res: Response) => {
 export const updateTask = async (req: Request, res: Response) => {
     try {
         const { taskId } = req.params;
+        const userId = req.userId
         const data = req.body;
 
-        if (!taskId) {
-            return res.json({ message: "TaskId is missing!!!" })
+        if (!taskId || !userId) {
+            return res.json({ message: "TaskId & UserId are required" })
         }
 
         const task = await prisma.task.findUnique({
@@ -157,6 +158,13 @@ export const updateTask = async (req: Request, res: Response) => {
 
         if (!task) {
             return res.status(404).json({ message: "Task not found" });
+        }
+
+        const isOwner = task.createdBy === userId;
+        const isAssignee = task.assigneeIds.includes(userId);
+
+        if (!isOwner && !isAssignee) {
+            return res.status(403).json({ message: "Not allowed to update this task" });
         }
 
         const updated = await prisma.task.update({
