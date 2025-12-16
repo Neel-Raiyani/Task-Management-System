@@ -37,7 +37,7 @@ export const addMember = async (req: Request, res: Response) => {
         const userId = req.userId as string;
 
         if (!userId) {
-            return res.json({ message: "User ID missing" });
+            return res.status(404).json({ message: "User ID missing" });
         }
 
         const workspace = await prisma.workspace.findUnique({ where: { id: workspaceId } });
@@ -59,11 +59,12 @@ export const addMember = async (req: Request, res: Response) => {
         });
 
         if(duplicate){
-            return res.json({Message: "User already exists!!!"});
+            return res.status(409).json({Message: "User already exists!!!"});
         }
 
         const updated = await prisma.workspace.update({
             where: { id: workspaceId },
+            select: { memberIds: true },
             data: {
                 memberIds: { push: memberId }
             },
@@ -83,7 +84,7 @@ export const myWorkSpaces = async (req: Request, res: Response) => {
         const userId = req.userId as string;
 
         if (!userId) {
-            return res.json({ message: "User ID missing" });
+            return res.status(404).json({ message: "User ID missing" });
         }
 
         const workspaces = await prisma.workspace.findMany({
@@ -93,7 +94,7 @@ export const myWorkSpaces = async (req: Request, res: Response) => {
             omit: {ownerId: true, memberIds: true, createdAt: true}
         });
 
-        res.json(workspaces);
+        res.status(200).json(workspaces);
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error })
     }

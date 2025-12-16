@@ -11,7 +11,7 @@ export const getMyNotifications = async (req: Request, res: Response) => {
             orderBy: {createdAt: "desc"}
         });
 
-        res.json(notifications);
+        res.status(200).json(notifications);
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }
@@ -27,7 +27,7 @@ export const markAsRead = async (req: Request, res: Response) => {
       data: { isRead: true }
     });
 
-    res.json({ message: "Notification marked as read" });
+    res.status(200).json({ message: "Notification marked as read" });
   }
   catch(error){
     res.status(500).json({ Message: "Internal server error!!!", error });

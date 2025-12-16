@@ -31,7 +31,7 @@ export const createTask = async (req: Request, res: Response) => {
         } = req.body;
 
         if (!userId) {
-            return res.json({ message: "User ID missing" });
+            return res.status(400).json({ message: "User Id required" });
         }
 
         if (!boardId || !columnId || !title) {
@@ -124,7 +124,7 @@ export const listBoardTasks = async (req: Request, res: Response) => {
         const userId = req.userId;
 
         if (!userId || !boardId) {
-            return res.json({ message: "User and Board Ids are required" })
+            return res.status(400).json({ message: "User and Board Ids are required" })
         }
 
         await verifyUserInBoardWorkspace(userId, boardId);
@@ -134,7 +134,7 @@ export const listBoardTasks = async (req: Request, res: Response) => {
             orderBy: { order: "asc" }
         });
 
-        return res.json({ tasks });
+        return res.status(200).json({ tasks });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
@@ -149,7 +149,7 @@ export const updateTask = async (req: Request, res: Response) => {
         const data = req.body;
 
         if (!taskId || !userId) {
-            return res.json({ message: "TaskId & UserId are required" })
+            return res.status(400).json({ message: "TaskId & UserId are required" })
         }
 
         const task = await prisma.task.findUnique({
@@ -188,7 +188,7 @@ export const moveTask = async (req: Request, res: Response) => {
         const { newColumnId } = req.body;
 
         if (!taskId) {
-            return res.json({ message: "TaskId is missing!!!" })
+            return res.status(400).json({ message: "TaskId is required!!!" })
         }
 
         const moved = await prisma.task.update({
@@ -198,7 +198,7 @@ export const moveTask = async (req: Request, res: Response) => {
 
         getSocket().emit("taskMoved", moved);
 
-        res.json({ message: "Task moved", task: moved });
+        res.status(200).json({ message: "Task moved", task: moved });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
@@ -212,7 +212,7 @@ export const assignUser = async (req: Request, res: Response) => {
         const { userId } = req.body;
 
         if (!taskId) {
-            return res.json({ message: "TaskId is missing!!!" })
+            return res.status(400).json({ message: "TaskId is required!!!" })
         }
 
         const updated = await prisma.task.update({
@@ -230,7 +230,7 @@ export const assignUser = async (req: Request, res: Response) => {
             task: updated
         });
 
-        res.json({ message: "User assigned", task: updated });
+        res.status(200).json({ message: "User assigned", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
@@ -244,13 +244,13 @@ export const unassignUser = async (req: Request, res: Response) => {
         const userId = req.userId;
 
         if (!taskId || !userId) {
-            return res.json({ message: "TaskId and UserId are required" })
+            return res.status(400).json({ message: "TaskId and UserId are required" })
         }
 
         const task = await prisma.task.findUnique({ where: { id: taskId } });
 
         if (!task) {
-            return res.json({ message: "Task not found!!!" });
+            return res.status(404).json({ message: "Task not found!!!" });
         }
 
         const updatedAssignees = task.assigneeIds.filter(id => id !== userId);
@@ -266,7 +266,7 @@ export const unassignUser = async (req: Request, res: Response) => {
             task: updated
         });
 
-        res.json({ message: "User unassigned", task: updated });
+        res.status(200).json({ message: "User unassigned", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
@@ -280,7 +280,7 @@ export const addLabel = async (req: Request, res: Response) => {
         const { label } = req.body;
 
         if (!taskId) {
-            return res.json({ message: "TaskId is missing!!!" })
+            return res.status(400).json({ message: "TaskId is required!!!" })
         }
 
         const updated = await prisma.task.update({
@@ -292,7 +292,7 @@ export const addLabel = async (req: Request, res: Response) => {
 
         getSocket().emit("labelAdded", updated);
 
-        res.json({ message: "Label added", task: updated });
+        res.status(200).json({ message: "Label added", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
@@ -306,13 +306,13 @@ export const removeLabel = async (req: Request, res: Response) => {
         const { label } = req.body;
 
         if (!taskId) {
-            return res.json({ message: "TaskId is missing!!!" })
+            return res.status(400).json({ message: "TaskId is required!!!" })
         }
 
         const task = await prisma.task.findUnique({ where: { id: taskId } });
 
         if (!task) {
-            return res.json({ message: "Task not found!!!" });
+            return res.status(404).json({ message: "Task not found!!!" });
         }
 
         const updatedLabels = task.labels.filter(l => l !== label);
@@ -326,7 +326,7 @@ export const removeLabel = async (req: Request, res: Response) => {
 
         getSocket().emit("labelRemoved", updated);
 
-        res.json({ message: "Label removed", task: updated });
+        res.status(200).json({ message: "Label removed", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
@@ -340,7 +340,7 @@ export const updatePriority = async (req: Request, res: Response) => {
         const { priority } = req.body;
 
         if (!taskId) {
-            return res.json({ message: "TaskId is missing!!!" });
+            return res.status(400).json({ message: "TaskId is required!!!" });
         }
 
         const updated = await prisma.task.update({
@@ -350,7 +350,7 @@ export const updatePriority = async (req: Request, res: Response) => {
 
         getSocket().emit("priorityUpdated", updated);
 
-        res.json({ message: "Priority updated", task: updated });
+        res.status(200).json({ message: "Priority updated", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
@@ -364,7 +364,7 @@ export const updateDueDate = async (req: Request, res: Response) => {
         const { dueDate } = req.body;
 
         if (!taskId) {
-            return res.json({ message: "TaskId is missing!!!" });
+            return res.status(400).json({ message: "TaskId is required!!!" });
         }
 
         const updated = await prisma.task.update({
@@ -374,7 +374,7 @@ export const updateDueDate = async (req: Request, res: Response) => {
 
         getSocket().emit("dueDateUpdated", updated);
 
-        res.json({ message: "Due date updated", task: updated });
+        res.status(200).json({ message: "Due date updated", task: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });
     }
@@ -387,7 +387,7 @@ export const deleteTask = async (req: Request, res: Response) => {
         const { taskId } = req.params;
 
         if (!taskId) {
-            return res.json({ message: "SubtaskId is required" });
+            return res.status(400).json({ message: "SubtaskId is required" });
         }
 
         await prisma.task.delete({
@@ -396,7 +396,7 @@ export const deleteTask = async (req: Request, res: Response) => {
 
         getSocket().emit("taskDeleted", { taskId });
 
-        res.json({ message: "Task deleted" });
+        res.status(200).json({ message: "Task deleted" });
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }

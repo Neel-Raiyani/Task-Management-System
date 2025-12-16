@@ -91,7 +91,7 @@ export const getCommentsForTask = async (req: Request, res: Response) => {
             orderBy: { createdAt: "asc" }
         });
 
-        return res.json({ comments });
+        return res.status(200).json({ comments });
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }
@@ -115,7 +115,7 @@ export const deleteComment = async (req: Request, res: Response) => {
 
         await prisma.comment.delete({ where: { id: commentId } });
 
-        return res.json({ message: "Comment deleted" });
+        return res.status(200).json({ message: "Comment deleted" });
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }

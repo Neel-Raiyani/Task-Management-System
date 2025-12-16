@@ -7,7 +7,7 @@ export const createBoard = async (req: Request, res: Response) => {
         const userId = req.userId;
 
         if (!userId) {
-            return res.json({ message: "User ID missing" });
+            return res.status(404).json({ message: "User ID missing" });
         }
 
         if (!title || !workspaceId) {
@@ -27,7 +27,8 @@ export const createBoard = async (req: Request, res: Response) => {
         }
 
         const board = await prisma.board.create({
-            data: { title, workspaceId }
+            data: { title, workspaceId },
+            omit: {createdAt: true}
         });
 
         res.status(201).json({ message: "Board created", board });

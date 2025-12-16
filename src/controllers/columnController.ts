@@ -40,7 +40,7 @@ export const renameColumn = async (req: Request, res: Response) => {
         const { name } = req.body;
 
         if(!columnId){
-            return res.json({message: "ColumnId missing!!!"});
+            return res.status(400).json({message: "ColumnId required!!!"});
         }
 
         const column = await prisma.column.update({
@@ -48,7 +48,7 @@ export const renameColumn = async (req: Request, res: Response) => {
             data: { name }
         });
 
-        res.json({ message: "Column renamed", column });
+        res.status(200).json({ message: "Column renamed", column });
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }
@@ -61,7 +61,7 @@ export const reorderColumns = async (req: Request, res: Response) => {
         const { boardId, orderedIds } = req.body;
 
         if(!boardId || !orderedIds){
-            return res.json({message: "BoardId and ColumnIds are required"})
+            return res.status(400).json({message: "BoardId and ColumnIds are required"})
         }
 
         const board = await prisma.board.findUnique({
@@ -78,7 +78,7 @@ export const reorderColumns = async (req: Request, res: Response) => {
             });
         }
 
-        res.json({ message: "Columns reordered" });
+        res.status(200).json({ message: "Columns reordered" });
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }

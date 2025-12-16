@@ -15,6 +15,7 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import taskSearchRoutes from "./routes/taskSearchRoutes.js";
 import { setSocket } from "./config/socket.js";
+import { setupSwagger } from "./config/swagger.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ const app = express();
 const PORT = process.env.PORT || 1818;
 
 connectDB();
+setupSwagger(app);
 
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));

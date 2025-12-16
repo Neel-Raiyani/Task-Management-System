@@ -31,7 +31,7 @@ export const uploadTaskFiles = async (req: Request, res: Response) => {
                 attachments: { push: filePaths }
             }
         });
-        res.json({ message: "Files uploaded", task });
+        res.status(201).json({ message: "Files uploaded", task });
     } catch (error) {
         console.log(error);
         res.status(500).json({ Message: "Internal Server Error!!!", error });
@@ -67,7 +67,7 @@ export const uploadCommentFiles = async (req: Request, res: Response) => {
                 attachments: { push: filePaths }
             }
         });
-         res.json({ message: "Files uploaded", comment });
+         res.status(201).json({ message: "Files uploaded", comment });
 
     } catch (error) {
         res.status(500).json({ Message: "Internal Server Error!!!", error });

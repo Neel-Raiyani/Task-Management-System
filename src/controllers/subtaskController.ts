@@ -40,7 +40,7 @@ export const toggleSubtask = async (req: Request, res: Response) => {
         const { subtaskId } = req.params;
 
         if (!subtaskId) {
-            return res.json({ message: "SubtaskId is required" });
+            return res.status(400).json({ message: "SubtaskId is required" });
         }
 
         const subtask = await prisma.subtask.findUnique({
@@ -56,7 +56,7 @@ export const toggleSubtask = async (req: Request, res: Response) => {
             data: { done: !subtask.done }
         });
 
-        res.json({ message: "Subtask updated", subtask: updated });
+        res.status(200).json({ message: "Subtask updated", subtask: updated });
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }
@@ -69,7 +69,7 @@ export const deleteSubtask = async (req: Request, res: Response) => {
         const { subtaskId } = req.params;
 
         if (!subtaskId) {
-            return res.json({ message: "SubtaskId is required" });
+            return res.status(400).json({ message: "SubtaskId is required" });
         }
 
         const subtask = await prisma.subtask.findUnique({
@@ -84,7 +84,7 @@ export const deleteSubtask = async (req: Request, res: Response) => {
             where: { id: subtaskId }
         });
 
-        res.json({ message: "Subtask deleted" });
+        res.status(200).json({ message: "Subtask deleted" });
     } catch (error) {
         res.status(500).json({ Message: "Internal server error!!!", error });
     }

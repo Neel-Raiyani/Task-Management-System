@@ -31,7 +31,7 @@ export const searchTasks = async (req: Request, res: Response) => {
             orderBy: { dueDate: "asc" } 
         });
 
-        res.json({ tasks });
+        res.status(200).json({ tasks });
 
     } catch (error) {
         console.log(error);
