@@ -4,6 +4,6 @@ import { createBoard, getWorkspaceBoards } from "../controllers/boardController.
 const router = express.Router();
 
 router.post('/create-board', auth, createBoard);
-router.get('/workspace-boards/:workspaceId', getWorkspaceBoards);
+router.get('/workspace-boards/:workspaceId',auth, getWorkspaceBoards);
 
 export default router;

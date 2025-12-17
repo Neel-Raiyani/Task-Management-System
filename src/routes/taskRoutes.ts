@@ -9,15 +9,15 @@ router.get('/:taskId', auth, getTask);
 router.get('/list-board-tasks/:boardId', auth, listBoardTasks);
 
 router.put('/update/:taskId', auth, updateTask);
-router.put('/move/:taskId', moveTask);
+router.put('/move/:taskId', auth, moveTask);
 router.put('/assign-user/:taskId',auth, assignUser);
 router.put('/unassign-user/:taskId', auth, unassignUser);
-router.put('/add-label/:taskId', addLabel);
-router.put('/remove-label/:taskId', removeLabel);
-router.put('/update-priority/:taskId', updatePriority);
-router.put('/update-due/:taskId', updateDueDate);
+router.put('/add-label/:taskId', auth, addLabel);
+router.put('/remove-label/:taskId', auth, removeLabel);
+router.put('/update-priority/:taskId', auth, updatePriority);
+router.put('/update-due/:taskId', auth, updateDueDate);
 
-router.delete('/delete/:taskId', deleteTask);
+router.delete('/delete/:taskId', auth, deleteTask);
 
 export default router;
 

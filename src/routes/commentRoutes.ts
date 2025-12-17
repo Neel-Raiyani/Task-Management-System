@@ -6,7 +6,7 @@ import { addComment, addReply, deleteComment, getCommentsForTask } from "../cont
 router.post('/add/:taskId', auth, addComment);
 router.post('/add-reply/:taskId/:parentId', auth, addReply);
 
-router.get('/:taskId', getCommentsForTask);
+router.get('/:taskId', auth, getCommentsForTask);
 
 router.delete('/delete/:commentId', auth, deleteComment);
 

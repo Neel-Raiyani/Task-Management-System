@@ -18,7 +18,7 @@
  *             properties:
  *               title:
  *                 type: string
- *               workspaceId
+ *               workspaceId:
  *                 type: string
  *     responses:
  *       201:
