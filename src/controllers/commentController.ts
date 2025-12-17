@@ -87,13 +87,13 @@ export const getCommentsForTask = async (req: Request, res: Response) => {
         if (!taskId) return res.status(400).json({ message: "TaskId is missing!!!" });
 
         const comments = await prisma.comment.findMany({
-            where: { taskId },
+            where: { taskId , parentId: null},
             orderBy: { createdAt: "asc" }
         });
 
         return res.status(200).json({ comments });
     } catch (error) {
-        res.status(500).json({ Message: "Internal server error!!!", error });
+        res.status(500).json({ message: "Internal server error!!!", error });
     }
 }
 

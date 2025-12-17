@@ -59,8 +59,7 @@
  *   get:
  *     summary: Get all boards of a workspace
  *     description: Fetches all boards belonging to a specific workspace along with their columns.
- *     tags:
- *       - [Board]
+ *     tags: [Board]
  *     security:
  *       - bearerAuth: []
  *
