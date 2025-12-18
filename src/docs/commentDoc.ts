@@ -119,7 +119,8 @@
  *     description: Fetches all comments and replies for a task in chronological order.
  *     tags:
  *       - [Comment]
- *
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: taskId

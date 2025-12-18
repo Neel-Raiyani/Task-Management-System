@@ -342,7 +342,9 @@
  *     description: Adds a label to a task.
  *     tags:
  *       - [Task]
- *
+ *     security:
+ *       - bearerAuth: []
+ * 
  *     parameters:
  *       - in: path
  *         name: taskId
@@ -380,7 +382,9 @@
  *     description: Removes a specific label from a task.
  *     tags:
  *       - [Task]
- *
+ *     security:
+ *       - bearerAuth: []
+ * 
  *     parameters:
  *       - in: path
  *         name: taskId
@@ -418,7 +422,9 @@
  *     description: Updates the priority level of a task.
  *     tags:
  *       - [Task]
- *
+ *     security:
+ *       - bearerAuth: []
+ * 
  *     parameters:
  *       - in: path
  *         name: taskId
@@ -456,7 +462,9 @@
  *     description: Updates the due date of a task.
  *     tags:
  *       - [Task]
- *
+ *     security:
+ *       - bearerAuth: []
+ * 
  *     parameters:
  *       - in: path
  *         name: taskId

@@ -6,7 +6,8 @@
  *     description: Creates a new subtask under a specific task.
  *     tags:
  *       - [Subtask]
- *
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: taskId
@@ -58,7 +59,8 @@
  *     description: Marks a subtask as completed or incomplete.
  *     tags:
  *       - [Subtask]
- *
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: subtaskId
@@ -97,7 +99,8 @@
  *     description: Permanently deletes a subtask.
  *     tags:
  *       - [Subtask]
- *
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: subtaskId
